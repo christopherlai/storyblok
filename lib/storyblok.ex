@@ -4,6 +4,7 @@ defmodule Storyblok do
   """
 
   alias Storyblok.Operation
+  alias Storyblok.Client
 
   def request(operation, opts \\ []) do
     token = opts[:token] || Application.get_env(:storyblok, :token)
@@ -12,6 +13,10 @@ defmodule Storyblok do
 
     operation = Operation.put_token(operation, token)
 
-    Req.get!(Operation.url(operation), params: Operation.query(operation), follow_redirects: true)
+    Client.execute(
+      Operation.url(operation),
+      Operation.query(operation),
+      Keyword.get(opts, :client_opts, [])
+    )
   end
 end
