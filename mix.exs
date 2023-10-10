@@ -31,8 +31,9 @@ defmodule Storyblok.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:req, "~> 0.3.6"},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:jason, "~> 1.4"},
+      {:req, "~> 0.3.6", optional: true}
     ]
   end
 end
