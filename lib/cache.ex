@@ -2,61 +2,42 @@ defmodule Storyblok.Cache do
   @type json :: binary()
   @callback fetch(key :: binary(), opts :: keyword()) :: {:ok, json()} | {:error, :not_found}
 
-  @callback set(key :: binary(), value :: json(), opts :: keyword()) :: :ok | {:error, any()}
+  @callback set(key :: binary(), value :: json(), expire_in_ms :: integer(), opts :: keyword()) ::
+              :ok | {:error, any()}
 
-  def fetch(key, opts \\ []) do
-    key =
-      opts
-      |> Keyword.get(:prefix)
-      |> join_key(key)
+  def fetch(token, path, query, opts \\ []) do
+    cv = get_cache_version(token, opts)
+    key = "storyblok:#{token}:v:#{cv}:#{path}:#{query}"
 
-    opts = Keyword.get(opts, :store_opts, [])
-
-    with {:ok, json} <- store().get(key, opts) do
+    with {:ok, json} <- store().fetch(key, opts) do
       Jason.decode(json)
     end
   end
 
-  def set(key, value, opts \\ []) do
-    key =
-      opts
-      |> Keyword.get(:prefix)
-      |> join_key(key)
-
-    opts = Keyword.get(opts, :store_opts, [])
+  def set(token, path, query, value, opts \\ []) do
+    cv = get_cache_version(token, opts)
+    key = "storyblok:#{token}:v:#{cv}:#{path}:#{query}"
+    expire = :timer.hours(1)
 
     with {:ok, json} <- Jason.encode(value) do
-      store().set(key, json, opts)
+      store().set(key, json, expire, opts)
     end
   end
 
-  def get_cache_version(opts \\ []) do
-    key =
-      opts
-      |> Keyword.get(:prefix)
-      |> join_key("storyblok:cv")
-
-    opts = Keyword.get(opts, :store_opts, [])
+  def get_cache_version(token, opts \\ []) do
+    key = "storyblok:#{token}:version"
 
     case store().fetch(key, opts) do
       {:ok, version} -> version
-      {:error, :not_found} -> 0
+      {:error, :not_found} -> DateTime.utc_now() |> DateTime.to_unix()
     end
   end
 
-  def set_cache_version(version, opts \\ []) do
-    key =
-      opts
-      |> Keyword.get(:prefix)
-      |> join_key("storyblok:cv")
-
-    opts = Keyword.get(opts, :store_opts, [])
+  def set_cache_version(token, version, opts \\ []) do
+    key = "storyblok:#{token}:version"
 
     store().set(key, version, opts)
   end
 
   defp store, do: Application.get_env(:storyblok, :cache_store, Storyblok.RedisCache)
-
-  defp join_key(nil, suffix), do: suffix
-  defp join_key(prefix, suffix), do: prefix <> ":" <> suffix
 end

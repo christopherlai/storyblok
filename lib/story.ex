@@ -8,7 +8,7 @@ defmodule Storyblok.Story do
   @typep uuid :: binary()
 
   @spec get(identifier :: story_identifier()) :: term()
-  def get(identifier, query \\ []), do: Operation.new("/v2/cdn/stories/#{identifier}", query)
+  def get(identifier, query \\ []), do: Operation.new("/cdn/stories/#{identifier}", query)
 
-  def list(query \\ []), do: Operation.new("/v2/cdn/stories", query)
+  def list(query \\ []), do: Operation.new("/cdn/stories", query)
 end

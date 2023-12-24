@@ -5,6 +5,7 @@ defmodule Storyblok do
 
   alias Storyblok.Operation
   alias Storyblok.Client
+  alias Storyblok.Cache
 
   def request(operation, opts \\ []) do
     token = opts[:token] || Application.get_env(:storyblok, :token)
@@ -12,11 +13,38 @@ defmodule Storyblok do
     unless token, do: raise(ArgumentError, "Missing token")
 
     operation = Operation.put_token(operation, token)
+    cache = Application.get_env(:storyblok, :cache, false) && Operation.cache?(operation)
 
-    Client.execute(
-      Operation.url(operation),
-      Operation.query(operation),
-      Keyword.get(opts, :client_opts, [])
-    )
+    request_fun = fn ->
+      Client.execute(
+        Operation.url(operation),
+        Operation.query(operation),
+        Keyword.get(opts, :client_opts, [])
+      )
+    end
+
+    if cache do
+      token = operation.token
+      path = operation.path
+      cv = Cache.get_cache_version(token)
+      encoded_query = Operation.query_encode(operation, cv)
+      opts = Keyword.get(opts, :cache_opts, [])
+
+      with {:error, _error} <- Cache.fetch(token, path, encoded_query, opts),
+           {:ok, response} <- request_fun.() do
+        data = %{
+          headers: Enum.into(response.headers, %{}),
+          data: response.body
+        }
+
+        cv = data.data["cv"]
+        Cache.set_cache_version(token, cv, opts)
+        Cache.set(token, path, encoded_query, data, opts) |> dbg()
+
+        {:ok, data}
+      end
+    else
+      request_fun.()
+    end
   end
 end

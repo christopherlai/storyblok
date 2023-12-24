@@ -33,6 +33,7 @@ defmodule Storyblok.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, "~> 1.4"},
+      {:redix, "~> 1.3", optional: true},
       {:req, "~> 0.3.6", optional: true}
     ]
   end
