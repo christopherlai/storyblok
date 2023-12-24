@@ -1,7 +1,21 @@
 defmodule Storyblok.Cache do
+  @moduledoc """
+  This callback must be implemented to utilize caching.
+
+  Implement `c:fetch/2` and `c:set4/1` and add the following to your config.
+
+  ```elixir
+  config :storyblok, cache: true, cache_store: MyApp.CacheStore
+  ```
+  """
+
+  @typedoc "Valid JSON"
   @type json :: binary()
+
+  @doc "Callback for getting data for key from cache store/"
   @callback fetch(key :: binary(), opts :: keyword()) :: {:ok, json()} | {:error, :not_found}
 
+  @doc "Callback for setting data with the given key. expire_in_ms is the TTL for the key in milliseconds."
   @callback set(key :: binary(), value :: json(), expire_in_ms :: integer(), opts :: keyword()) ::
               :ok | {:error, any()}
 

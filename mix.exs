@@ -8,7 +8,8 @@ defmodule Storyblok.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      package: package()
+      package: package(),
+      docs: docs()
     ]
   end
 
@@ -19,12 +20,18 @@ defmodule Storyblok.MixProject do
     ]
   end
 
-  def package do
+  defp package do
     [
       description: "Storyblok API Client",
       licenses: ["MIT"],
       links: %{GitHub: "https://github.com/christopherlai/storyblok"},
       source_url: "https://github.com/christopherlai/storyblok"
+    ]
+  end
+
+  defp docs do
+    [
+      extras: ["README.md"]
     ]
   end
 
