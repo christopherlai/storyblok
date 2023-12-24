@@ -2,7 +2,7 @@
 
 ## Installation
 
-The [package]https://hex.pm/packages/storyblok) can be installed by adding `storyblok` to your list of dependencies in `mix.exs`:
+The [package](https://hex.pm/packages/storyblok) can be installed by adding `storyblok` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
