@@ -2,7 +2,7 @@ defmodule Storyblok.Cache do
   @moduledoc """
   This callback must be implemented to utilize caching.
 
-  Implement `c:fetch/2` and `c:set4/1` and add the following to your config.
+  Implement `c:fetch/2` and `c:set/4` and add the following to your config.
 
   ```elixir
   config :storyblok, cache: true, cache_store: MyApp.CacheStore
