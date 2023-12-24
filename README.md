@@ -7,7 +7,7 @@ The [package]https://hex.pm/packages/storyblok) can be installed by adding `stor
 ```elixir
 def deps do
   [
-    {:storyblok, "~> 2023.12.24-beta.2"}
+    {:storyblok, "~> 2023.12.24-beta.1"}
   ]
 end
 ```

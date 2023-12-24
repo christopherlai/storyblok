@@ -19,6 +19,7 @@ defmodule Storyblok.Cache do
   @callback set(key :: binary(), value :: json(), expire_in_ms :: integer(), opts :: keyword()) ::
               :ok | {:error, any()}
 
+  @doc false
   def fetch(token, path, query, opts \\ []) do
     cv = get_cache_version(token, opts)
     key = "storyblok:#{token}:v:#{cv}:#{path}:#{query}"
@@ -28,6 +29,7 @@ defmodule Storyblok.Cache do
     end
   end
 
+  @doc false
   def set(token, path, query, value, opts \\ []) do
     cv = get_cache_version(token, opts)
     key = "storyblok:#{token}:v:#{cv}:#{path}:#{query}"
@@ -38,6 +40,7 @@ defmodule Storyblok.Cache do
     end
   end
 
+  @doc false
   def get_cache_version(token, opts \\ []) do
     key = "storyblok:#{token}:version"
 
@@ -47,6 +50,7 @@ defmodule Storyblok.Cache do
     end
   end
 
+  @doc false
   def set_cache_version(token, version, opts \\ []) do
     key = "storyblok:#{token}:version"
 
