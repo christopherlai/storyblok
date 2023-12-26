@@ -53,8 +53,9 @@ defmodule Storyblok.Cache do
   @doc false
   def set_cache_version(token, version, opts \\ []) do
     key = "storyblok:#{token}:version"
+    expire = :timer.hours(1)
 
-    store().set(key, version, opts)
+    store().set(key, version, expire, opts)
   end
 
   defp store, do: Application.get_env(:storyblok, :cache_store, Storyblok.RedisCache)
