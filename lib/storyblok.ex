@@ -31,15 +31,15 @@ defmodule Storyblok do
       opts = Keyword.get(opts, :cache_opts, [])
 
       with {:error, _error} <- Cache.fetch(token, path, encoded_query, opts),
-           {:ok, response} <- request_fun.() do
+           {:ok, %{status: 200} = response} <- request_fun.() do
         data = %{
-          headers: Enum.into(response.headers, %{}),
-          data: response.body
+          "headers" => Enum.into(response.headers, %{}),
+          "data" => response.body
         }
 
-        cv = data.data["cv"]
+        cv = get_in(data, ["data", "cv"])
         Cache.set_cache_version(token, cv, opts)
-        Cache.set(token, path, encoded_query, data, opts) |> dbg()
+        Cache.set(token, path, encoded_query, data, opts)
 
         {:ok, data}
       end
