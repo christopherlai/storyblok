@@ -15,6 +15,10 @@ defmodule Storyblok do
     operation = Operation.put_token(operation, token)
     cache = Application.get_env(:storyblok, :cache, false) && Operation.cache?(operation)
 
+    dbg(operation)
+    dbg(cache)
+    dbg(token)
+
     request_fun = fn ->
       Client.execute(
         Operation.url(operation),
