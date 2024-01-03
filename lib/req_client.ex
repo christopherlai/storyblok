@@ -6,7 +6,7 @@ defmodule Storyblok.ReqClient do
     opts =
       opts
       |> Keyword.put(:params, query)
-      |> Keyword.put_new(:follow_redirects, true)
+      |> Keyword.put_new(:redirect, true)
 
     case Req.get(url, opts) do
       {:ok, response} ->
