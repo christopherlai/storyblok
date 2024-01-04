@@ -44,7 +44,14 @@ defmodule Storyblok do
         {:ok, data}
       end
     else
-      request_fun.()
+      with {:ok, %{status: 200} = response} <- request_fun.() do
+        data = %{
+          "headers" => Enum.into(response.headers, %{}),
+          "data" => response.body
+        }
+
+        {:ok, data}
+      end
     end
   end
 end
