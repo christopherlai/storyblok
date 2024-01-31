@@ -1,5 +1,5 @@
 defmodule Storyblok.Operation do
-  defstruct base: "https://api.storyblok.com/v2",
+  defstruct base: "",
             method: :get,
             path: nil,
             query: [],
@@ -10,7 +10,7 @@ defmodule Storyblok.Operation do
 
   def new(path, query \\ []) do
     query = Keyword.merge(@default_query, query)
-    struct!(__MODULE__, path: path, query: query)
+    struct!(__MODULE__, base: base(), path: path, query: query)
   end
 
   def put_token(%__MODULE__{} = operation, token), do: %{operation | token: token}
@@ -37,4 +37,6 @@ defmodule Storyblok.Operation do
 
   def cache?(%__MODULE__{bypass: bypass, query: query}),
     do: !bypass && query[:version] == "published"
+
+  defp base, do: Application.get_env(:storyblok, :url, "https://api.storyblok.com/v2")
 end
