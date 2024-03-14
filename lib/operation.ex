@@ -24,6 +24,7 @@ defmodule Storyblok.Operation do
   def query_encode(%__MODULE__{query: query, token: token}, cv) do
     encode = [
       token: token,
+      language: query[:language],
       version: query[:version],
       cv: cv
     ]
