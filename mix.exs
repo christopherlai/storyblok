@@ -4,7 +4,7 @@ defmodule Storyblok.MixProject do
   def project do
     [
       app: :storyblok,
-      version: "2024.1.31-beta.1",
+      version: "2024.3.13-beta.1",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
